@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class StaminaBar : MonoBehaviour
 {
-    public Slider staminaBar;
+/*    public Slider staminaBar;
 
     private int maxStamina = 100;
     private int currentStamina;
@@ -61,5 +61,5 @@ public class StaminaBar : MonoBehaviour
         }
         regen = null;  
     }
-
+*/
 }

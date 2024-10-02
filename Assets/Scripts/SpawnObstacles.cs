@@ -96,23 +96,6 @@ public class SpawnObstacles : MonoBehaviour
                 return;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         if (lastYPositionWallSpikes - playerTransform.position.y > SpikesDistance)
         {
             float side = Random.Range(0, 10);

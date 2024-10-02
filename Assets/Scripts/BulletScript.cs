@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    private Rigidbody rb;
+/*    private Rigidbody rb;
     public float force;
     float destructionTime = 5;
 
@@ -48,5 +48,5 @@ public class BulletScript : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
             //Destroy(gameObject);
         }
-    }
+    }*/
 }
