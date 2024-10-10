@@ -44,6 +44,24 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""DashButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""c734954a-6c5c-433b-897f-453b0f5341df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShootButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""4b5a07f7-8599-4812-891e-32358c4462ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -101,6 +119,28 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""ShootMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""822456ff-6bc7-4c3e-bfaf-3b5f343de3e6"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DashButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5670b511-cbdf-4ed2-826c-1fc342a4a02f"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShootButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -111,6 +151,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Horizontal = asset.FindActionMap("Horizontal", throwIfNotFound: true);
         m_Horizontal_HorizontalMove = m_Horizontal.FindAction("HorizontalMove", throwIfNotFound: true);
         m_Horizontal_ShootMovement = m_Horizontal.FindAction("ShootMovement", throwIfNotFound: true);
+        m_Horizontal_DashButton = m_Horizontal.FindAction("DashButton", throwIfNotFound: true);
+        m_Horizontal_ShootButton = m_Horizontal.FindAction("ShootButton", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -172,12 +214,16 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private IHorizontalActions m_HorizontalActionsCallbackInterface;
     private readonly InputAction m_Horizontal_HorizontalMove;
     private readonly InputAction m_Horizontal_ShootMovement;
+    private readonly InputAction m_Horizontal_DashButton;
+    private readonly InputAction m_Horizontal_ShootButton;
     public struct HorizontalActions
     {
         private @PlayerInputActions m_Wrapper;
         public HorizontalActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @HorizontalMove => m_Wrapper.m_Horizontal_HorizontalMove;
         public InputAction @ShootMovement => m_Wrapper.m_Horizontal_ShootMovement;
+        public InputAction @DashButton => m_Wrapper.m_Horizontal_DashButton;
+        public InputAction @ShootButton => m_Wrapper.m_Horizontal_ShootButton;
         public InputActionMap Get() { return m_Wrapper.m_Horizontal; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -193,6 +239,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @ShootMovement.started -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnShootMovement;
                 @ShootMovement.performed -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnShootMovement;
                 @ShootMovement.canceled -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnShootMovement;
+                @DashButton.started -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnDashButton;
+                @DashButton.performed -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnDashButton;
+                @DashButton.canceled -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnDashButton;
+                @ShootButton.started -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnShootButton;
+                @ShootButton.performed -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnShootButton;
+                @ShootButton.canceled -= m_Wrapper.m_HorizontalActionsCallbackInterface.OnShootButton;
             }
             m_Wrapper.m_HorizontalActionsCallbackInterface = instance;
             if (instance != null)
@@ -203,6 +255,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @ShootMovement.started += instance.OnShootMovement;
                 @ShootMovement.performed += instance.OnShootMovement;
                 @ShootMovement.canceled += instance.OnShootMovement;
+                @DashButton.started += instance.OnDashButton;
+                @DashButton.performed += instance.OnDashButton;
+                @DashButton.canceled += instance.OnDashButton;
+                @ShootButton.started += instance.OnShootButton;
+                @ShootButton.performed += instance.OnShootButton;
+                @ShootButton.canceled += instance.OnShootButton;
             }
         }
     }
@@ -211,5 +269,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     {
         void OnHorizontalMove(InputAction.CallbackContext context);
         void OnShootMovement(InputAction.CallbackContext context);
+        void OnDashButton(InputAction.CallbackContext context);
+        void OnShootButton(InputAction.CallbackContext context);
     }
 }

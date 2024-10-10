@@ -22,6 +22,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "DashButton",
+                    "type": "Button",
+                    "id": "c734954a-6c5c-433b-897f-453b0f5341df",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShootButton",
+                    "type": "Button",
+                    "id": "4b5a07f7-8599-4812-891e-32358c4462ac",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -77,6 +95,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "ShootMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "822456ff-6bc7-4c3e-bfaf-3b5f343de3e6",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DashButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5670b511-cbdf-4ed2-826c-1fc342a4a02f",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
