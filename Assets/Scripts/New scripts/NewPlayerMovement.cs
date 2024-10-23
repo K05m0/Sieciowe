@@ -22,6 +22,12 @@ public class NewPlayerMovement : MonoBehaviour
     [SerializeField] private float wallSideSpeed = 1f;
     private float currentWallSlideSpeed;
 
+    private float baseSpeed;
+    private float baseAcceleration;
+
+    // Original acceleration to restore later
+    private float originalAcceleration;
+
     [Header("Dash")]
     [SerializeField] private float dashForce = 20;
     [SerializeField] private float dashCooldown = 5;
@@ -37,6 +43,7 @@ public class NewPlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private PlayerInput playerInput;
     private PlayerInputActions inputActions;
+    [SerializeField] private SegmentController segmentController;
 
     [Header("States")]
     public bool isSlide = false;
@@ -52,6 +59,9 @@ public class NewPlayerMovement : MonoBehaviour
         inputActions.Horizontal.Enable();
         inputActions.Horizontal.DashButton.performed += DashButton_performed;
         inputActions.Horizontal.ShootButton.performed += ShootButton_performed;
+
+        // Store the original acceleration
+        originalAcceleration = segmentController.CurrAcceleration;
     }
 
     private void FixedUpdate()
@@ -62,11 +72,20 @@ public class NewPlayerMovement : MonoBehaviour
         {
             WallSlide();
         }
+        else
+        {
+            if (baseSpeed != 0 || baseAcceleration != 0)
+            {
+                baseSpeed = 0;
+                baseAcceleration = 0;
+            }
+            segmentController.CurrAcceleration = segmentController.BaseAcceleration;
+        }
 
-        // Dodaj siłę w poziomie
+        // Add horizontal force
         rb.AddForce(new Vector3(horizontalMovement, 0, 0) * horizontalSpeed);
 
-        // Obrót gracza w zależności od kierunku
+        // Flip player sprite based on direction
         if (horizontalMovement < 0 && !isFacingRight)
         {
             Flip();
@@ -79,17 +98,20 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Wykrycie ścian po bokach
+        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+
+        // Detect walls on sides
         isSlide = DetectWallOnSides(transform.right) || DetectWallOnSides(-transform.right);
 
         if (!isSlide)
         {
             currentWallSlideSpeed = 0;
+
         }
 
         MoveIndicator();
 
-        // Wykrycie końca ruchu joysticka dla dasza
+        // Detect joystick release for dash
         DetectJoystickReleaseForDash();
     }
 
@@ -111,15 +133,15 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void WallSlide()
     {
-        if (currentWallSlideSpeed == 0)
+        if(baseSpeed == 0 || baseAcceleration == 0)
         {
-            currentWallSlideSpeed = baseWallSlideSpeed;
+            baseSpeed = segmentController.CurrSegmentSpeed;
+            baseAcceleration = segmentController.CurrAcceleration;
         }
-        else
-        {
-            currentWallSlideSpeed = Mathf.Lerp(currentWallSlideSpeed, endWallSlideSpeed, wallSideSpeed);
-        }
-        rb.velocity = new Vector3(horizontalMovement, -currentWallSlideSpeed, 0);
+
+        // Reduce segment speed and acceleration when sliding
+        segmentController.CurrSegmentSpeed = Mathf.Max(baseSpeed * 0.5f, segmentController.CurrSegmentSpeed * Time.deltaTime * 6); // Reduce speed
+        segmentController.CurrAcceleration = Mathf.Max(baseAcceleration * 0.2f, segmentController.CurrAcceleration * Time.deltaTime * 6); // Reduce acceleration
     }
 
     private void MoveIndicator()
@@ -145,16 +167,19 @@ public class NewPlayerMovement : MonoBehaviour
     {
         if (shootingMovement.sqrMagnitude > 0.1f)
         {
-            // Joystick jest trzymany
+            // Joystick is held
             wasJoystickHeld = true;
         }
         else if (wasJoystickHeld && shootingMovement == Vector2.zero)
         {
-            // Joystick był trzymany, ale został puszczony
+            // Joystick was held but released
             Debug.Log("Joystick released, performing dash");
-            DashButton_performed(new InputAction.CallbackContext()); // Wywołanie dasza
+            DashButton_performed(new InputAction.CallbackContext()); // Invoke dash
 
-            // Resetowanie flagi
+            // Restore original acceleration
+            segmentController.CurrAcceleration = originalAcceleration;
+
+            // Reset the flag
             wasJoystickHeld = false;
         }
     }
@@ -195,7 +220,7 @@ public class NewPlayerMovement : MonoBehaviour
     private IEnumerator Dash()
     {
         canDash = false;
-        yield return new WaitForSeconds(dashCooldown);  // Ustal czas cooldownu dasza
+        yield return new WaitForSeconds(dashCooldown);  // Set dash cooldown time
         canDash = true;
     }
 }
