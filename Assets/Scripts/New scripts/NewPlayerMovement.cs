@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class NewPlayerMovement : MonoBehaviour
@@ -30,7 +28,7 @@ public class NewPlayerMovement : MonoBehaviour
     private bool canDash = true;
 
     [Header("Shoot")]
-    private Vector2 shootingMovenet;
+    private Vector2 shootingMovement;
     private float lastIndicatorAngle;
     [SerializeField] private GameObject shootIndicator;
     [SerializeField] private float indicatorRadius;
@@ -38,7 +36,7 @@ public class NewPlayerMovement : MonoBehaviour
     [Header("Reference")]
     private Rigidbody rb;
     private PlayerInput playerInput;
-    PlayerInputActions inputActions;
+    private PlayerInputActions inputActions;
 
     [Header("States")]
     public bool isSlide = false;
@@ -54,8 +52,8 @@ public class NewPlayerMovement : MonoBehaviour
         inputActions.Horizontal.Enable();
         inputActions.Horizontal.DashButton.performed += DashButton_performed;
         inputActions.Horizontal.ShootButton.performed += ShootButton_performed;
-
     }
+
     private void FixedUpdate()
     {
         MovementInput();
@@ -65,8 +63,10 @@ public class NewPlayerMovement : MonoBehaviour
             WallSlide();
         }
 
+        // Dodaj siłę w poziomie
         rb.AddForce(new Vector3(horizontalMovement, 0, 0) * horizontalSpeed);
 
+        // Obrót gracza w zależności od kierunku
         if (horizontalMovement < 0 && !isFacingRight)
         {
             Flip();
@@ -76,15 +76,14 @@ public class NewPlayerMovement : MonoBehaviour
             Flip();
         }
     }
+
     private void Update()
     {
-        if (DetectWallOnSides(transform.right) || DetectWallOnSides(-transform.right))
+        // Wykrycie ścian po bokach
+        isSlide = DetectWallOnSides(transform.right) || DetectWallOnSides(-transform.right);
+
+        if (!isSlide)
         {
-            isSlide = true;
-        }
-        else if (!DetectWallOnSides(transform.right) && !DetectWallOnSides(-transform.right))
-        {
-            isSlide = false;
             currentWallSlideSpeed = 0;
         }
 
@@ -93,10 +92,12 @@ public class NewPlayerMovement : MonoBehaviour
         // Wykrycie końca ruchu joysticka dla dasza
         DetectJoystickReleaseForDash();
     }
+
     private void ShootButton_performed(InputAction.CallbackContext context)
     {
         Debug.Log("Shoot");
     }
+
     private void DashButton_performed(InputAction.CallbackContext obj)
     {
         Debug.Log("Dash");
@@ -107,9 +108,10 @@ public class NewPlayerMovement : MonoBehaviour
         var dashDirection = shootIndicator.transform.right;
         rb.AddForce(dashDirection * dashForce, ForceMode.VelocityChange);
     }
+
     private void WallSlide()
     {
-        if(currentWallSlideSpeed == 0)
+        if (currentWallSlideSpeed == 0)
         {
             currentWallSlideSpeed = baseWallSlideSpeed;
         }
@@ -119,19 +121,17 @@ public class NewPlayerMovement : MonoBehaviour
         }
         rb.velocity = new Vector3(horizontalMovement, -currentWallSlideSpeed, 0);
     }
+
     private void MoveIndicator()
     {
-        Vector2 previousShootingMovement = shootingMovenet;  // Zapisanie poprzedniego stanu
+        shootingMovement = inputActions.Horizontal.ShootMovement.ReadValue<Vector2>();
 
-        shootingMovenet = inputActions.Horizontal.ShootMovement.ReadValue<Vector2>();
-
-        if (shootingMovenet.sqrMagnitude > 0.1f)
+        if (shootingMovement.sqrMagnitude > 0.1f)
         {
-            // Oblicz kąt na podstawie joysticka
-            lastIndicatorAngle = Mathf.Atan2(shootingMovenet.y, shootingMovenet.x) * Mathf.Rad2Deg;
+            lastIndicatorAngle = Mathf.Atan2(shootingMovement.y, shootingMovement.x) * Mathf.Rad2Deg;
         }
 
-        var angle = Mathf.Atan2(shootingMovenet.y, shootingMovenet.x) * Mathf.Rad2Deg;
+        var angle = Mathf.Atan2(shootingMovement.y, shootingMovement.x) * Mathf.Rad2Deg;
         Vector2 indicatorPosition = new Vector2(
             Mathf.Cos(angle * Mathf.Deg2Rad) * indicatorRadius,
             Mathf.Sin(angle * Mathf.Deg2Rad) * indicatorRadius
@@ -140,14 +140,15 @@ public class NewPlayerMovement : MonoBehaviour
         shootIndicator.transform.position = transform.position + (Vector3)indicatorPosition;
         shootIndicator.transform.rotation = Quaternion.Euler(0, 0, lastIndicatorAngle);
     }
+
     private void DetectJoystickReleaseForDash()
     {
-        if (shootingMovenet.sqrMagnitude > 0.1f)
+        if (shootingMovement.sqrMagnitude > 0.1f)
         {
             // Joystick jest trzymany
             wasJoystickHeld = true;
         }
-        else if (wasJoystickHeld && shootingMovenet == Vector2.zero)
+        else if (wasJoystickHeld && shootingMovement == Vector2.zero)
         {
             // Joystick był trzymany, ale został puszczony
             Debug.Log("Joystick released, performing dash");
@@ -157,6 +158,7 @@ public class NewPlayerMovement : MonoBehaviour
             wasJoystickHeld = false;
         }
     }
+
     private void MovementInput()
     {
         try
@@ -175,35 +177,25 @@ public class NewPlayerMovement : MonoBehaviour
             }
         }
     }
+
     private bool DetectWallOnSides(Vector3 direction)
     {
         var distance = wallDetectionRange + transform.localScale.x / 2;
-        if (Physics.Raycast(transform.position, direction, out var hit, distance, wallLayer))
-        {
-            Debug.Log("Wall Detected");
-            Debug.DrawRay(transform.position, direction * Vector3.Distance(transform.position, hit.point), Color.red);
-            return true;
-        }
-        else
-        {
-            Debug.Log("Wall notDetected");
-
-            Debug.DrawRay(transform.position, direction * distance, Color.blue);
-            return false;
-        }
+        return Physics.Raycast(transform.position, direction, out var hit, distance, wallLayer);
     }
+
     private void Flip()
     {
         isFacingRight = !isFacingRight;
         Vector3 scale = playerSprite.transform.localScale;
         scale.x *= -1;
         playerSprite.transform.localScale = scale;
-
     }
-    IEnumerator Dash()
+
+    private IEnumerator Dash()
     {
         canDash = false;
-        yield return new WaitForSeconds(1);  // Czas trwania cooldownu dasza
+        yield return new WaitForSeconds(dashCooldown);  // Ustal czas cooldownu dasza
         canDash = true;
     }
 }

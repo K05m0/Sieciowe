@@ -2,12 +2,23 @@
 
 public class Segment : MonoBehaviour
 {
-    // Funkcja, która zostanie wywołana przez dziecko
     public bool IsInSegment;
-    public void OnChildTriggerExit(Collider other)
+
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger wykryty w dziecku segmentu: " + gameObject.name);
-        // Tutaj możesz dodać swoją logikę
-        IsInSegment = !IsInSegment;
+        if (other.CompareTag("Player"))
+        {
+            IsInSegment = true;
+            Debug.Log("Gracz wszedł w segment: " + gameObject.name);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            IsInSegment = false;
+            Debug.Log("Gracz opuścił segment: " + gameObject.name);
+        }
     }
 }
