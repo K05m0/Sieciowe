@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class NewPlayerMovement : MonoBehaviour
@@ -29,8 +30,10 @@ public class NewPlayerMovement : MonoBehaviour
     private float originalAcceleration;
 
     [Header("Dash")]
+    [SerializeField] private Slider dashCDSlider;
     [SerializeField] private float dashForce = 20;
     [SerializeField] private float dashCooldown = 5;
+    private float currDashTime;
     private bool canDash = true;
 
     [Header("Shoot")]
@@ -52,6 +55,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+
+        currDashTime = dashCooldown;
+
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
 
@@ -66,6 +72,12 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        currDashTime += Time.fixedDeltaTime;
+        currDashTime = Mathf.Clamp(currDashTime,0,dashCooldown);
+
+        dashCDSlider.value = currDashTime/dashCooldown;
+        Debug.Log(dashCooldown / currDashTime);
+
         MovementInput();
 
         if (isSlide)
@@ -98,8 +110,6 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-
         // Detect walls on sides
         isSlide = DetectWallOnSides(transform.right) || DetectWallOnSides(-transform.right);
 
@@ -122,12 +132,14 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void DashButton_performed(InputAction.CallbackContext obj)
     {
-        Debug.Log("Dash");
         if (!canDash)
             return;
 
+        Debug.Log("Dash");
+        currDashTime = 0.01f;
         StartCoroutine(Dash());
         var dashDirection = shootIndicator.transform.right;
+        rb.velocity = Vector3.zero;
         rb.AddForce(dashDirection * dashForce, ForceMode.VelocityChange);
     }
 

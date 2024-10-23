@@ -298,18 +298,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51bdd4444b0f6146a42f5ca7a929d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSprite: {fileID: 0}
-  horizontalSpeed: 15
-  wallDetectionRange: 0
+  playerSprite: {fileID: 385332411}
+  horizontalSpeed: 5
+  wallDetectionRange: 0.05
   wallLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   baseWallSlideSpeed: 3
   endWallSlideSpeed: 0.3
-  dashForce: 20
+  wallSideSpeed: 2
+  dashCDSlider: {fileID: 0}
+  dashForce: 5
   dashCooldown: 5
   shootIndicator: {fileID: 9014132421689718285}
-  indicatorRadius: 5
+  indicatorRadius: 0.5
+  segmentController: {fileID: 0}
   isSlide: 0
   isMoving: 0
   isFacingRight: 0

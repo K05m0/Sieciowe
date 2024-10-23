@@ -89,12 +89,9 @@ public class SegmentController : MonoBehaviour
     {
         List<Segment> list = new List<Segment>(SpawnedSegments);
         int index = list.IndexOf(segment);
-        Debug.Log(SpawnedSegments.Count);
-        Debug.Log($"Leaved Segment have index {index}");
 
         if (index >= 0 && index < SpawnedSegments.Count && index >= Mathf.Round(MaxSegmentsSpawns / 2))
         {
-            Debug.Log($"spawn on index {index}");
             RemoveSegment();
             AddSegments();
         }
