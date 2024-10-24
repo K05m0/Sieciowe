@@ -6,14 +6,16 @@ public class CameraTransporter : MonoBehaviour
 {
     [SerializeField] private Transform cameraTransporter;
     private float transporterXposition;
+    private float transporterYposition;
 
     private void Awake()
     {
         transporterXposition = cameraTransporter.position.x;
+        transporterYposition = cameraTransporter.position.y;
     }
 
     private void Update()
     {
-        cameraTransporter.position = new Vector3(transporterXposition, transform.position.y, transform.position.z);
+        cameraTransporter.position = new Vector3(transporterXposition, transporterYposition, transform.position.z);
     }
 }

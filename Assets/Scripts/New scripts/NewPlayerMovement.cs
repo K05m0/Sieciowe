@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -8,32 +9,49 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class NewPlayerMovement : MonoBehaviour
 {
-    [Header("art")]
+    [Header("Art")]
     [SerializeField] private SpriteRenderer playerSprite;
 
     [Header("Movement")]
     [SerializeField] private float horizontalSpeed;
+    [SerializeField] private LayerMask floorLayer;
+    [SerializeField, Range(0f, 0.5f)] private float floorDetectionRange;
+    [SerializeField] private float breakingSpeed;
+    [SerializeField] private float resetPositionSpeed;
+
     private float horizontalMovement;
     private bool wasJoystickHeld = false;
 
-    [Header("WallSlides")]
+    [Header("Wall Slides")]
     [SerializeField, Range(0f, 0.5f)] private float wallDetectionRange;
     [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private float baseWallSlideSpeed = 3f;
-    [SerializeField] private float endWallSlideSpeed = 0.3f;
-    [SerializeField] private float wallSideSpeed = 1f;
-    private float currentWallSlideSpeed;
+    [SerializeField, Range(0f, 1f)] private float slideMaxSpeedSlow = 0.3f;
+    [SerializeField] private float wallSlideBreakeSpeed = 1f;
 
     private float baseSpeed;
     private float baseAcceleration;
-
-    // Original acceleration to restore later
     private float originalAcceleration;
+
+    [Header("Stamina")]
+    [SerializeField] private Slider staminaSlider;
+    [SerializeField] private Image sliderFill;
+    [SerializeField] private Color blinkColor;
+    [SerializeField] private Color normalColor;
+    [SerializeField] private float maxStamina = 5f; // Maksymalny czas trwania wall slide (w sekundach)
+    [SerializeField] private float staminaUseMultiplayer = 1.5f; // Maksymalny czas trwania wall slide (w sekundach)
+    [SerializeField] private float staminaRegenDelay = 2f; // Opóźnienie regeneracji staminy (w sekundach)
+    [SerializeField] private float staminaRegenRate = 1f; // Szybkość regeneracji staminy (jednostki na sekundę)
+
+    private float currentStamina; // Aktualna ilość staminy
+    private bool canWallSlide = true; // Czy gracz może się ślizgać
+    private bool isBlinking = false; // Czy pasek staminy miga
+    private float staminaRegenTimer = 0f; // Licznik do opóźnienia regeneracji
+
 
     [Header("Dash")]
     [SerializeField] private Slider dashCDSlider;
-    [SerializeField] private float dashForce = 20;
-    [SerializeField] private float dashCooldown = 5;
+    [SerializeField] private float dashForce = 20f;
+    [SerializeField] private float dashCooldown = 5f;
     private float currDashTime;
     private bool canDash = true;
 
@@ -43,22 +61,23 @@ public class NewPlayerMovement : MonoBehaviour
     [SerializeField] private GameObject shootIndicator;
     [SerializeField] private float indicatorRadius;
 
-    [Header("Reference")]
+    [Header("References")]
     private Rigidbody rb;
-    private PlayerInput playerInput;
     private PlayerInputActions inputActions;
     [SerializeField] private SegmentController segmentController;
 
     [Header("Health")]
     [SerializeField] private int maxHp;
-    public int CurrHp { get { return maxHp; } set { maxHp = value; } }
+    public int CurrHp { get; private set; }
     [SerializeField] private HealthElementController hpUiPrefab;
     [SerializeField] private Transform hpContent;
     [SerializeField] private List<HealthElementController> allHealthElement;
-    public float invincibilityDuration = 2.0f; // Czas trwania nieśmiertelności po otrzymaniu obrażeń
-    public float blinkInterval = 0.1f; // Interwał migania sprite'a
-    private bool isInvincible = false; // Czy gracz jest w stanie nieśmiertelności
+    public float invincibilityDuration = 2.0f;
+    public float blinkInterval = 0.1f;
+    private bool isInvincible = false;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
 
     [Header("States")]
     public bool isSlide = false;
@@ -68,139 +87,47 @@ public class NewPlayerMovement : MonoBehaviour
     private void Awake()
     {
         SetUpHealth();
-
         currDashTime = dashCooldown;
-
+        currentStamina = maxStamina;
         rb = GetComponent<Rigidbody>();
-        playerInput = GetComponent<PlayerInput>();
-
         inputActions = new PlayerInputActions();
         inputActions.Horizontal.Enable();
         inputActions.Horizontal.DashButton.performed += DashButton_performed;
-
-        // Store the original acceleration
         originalAcceleration = segmentController.CurrAcceleration;
+        Canvas.ForceUpdateCanvases();
     }
 
     private void FixedUpdate()
     {
-        currDashTime += Time.fixedDeltaTime;
-        currDashTime = Mathf.Clamp(currDashTime, 0, dashCooldown);
-
-        dashCDSlider.value = currDashTime / dashCooldown;
-        Debug.Log(dashCooldown / currDashTime);
-
-        MovementInput();
-
-        if (isSlide)
-        {
-            WallSlide();
-        }
-        else
-        {
-            if (baseSpeed != 0 || baseAcceleration != 0)
-            {
-                baseSpeed = 0;
-                baseAcceleration = 0;
-            }
-            segmentController.CurrAcceleration = segmentController.BaseAcceleration;
-        }
-
-        // Add horizontal force
-        rb.AddForce(new Vector3(horizontalMovement, 0, 0) * horizontalSpeed);
-
-        // Flip player sprite based on direction
-        if (horizontalMovement < 0 && !isFacingRight)
-        {
-            Flip();
-        }
-        else if (horizontalMovement > 0 && isFacingRight)
-        {
-            Flip();
-        }
+        UpdateDashCooldown();
+        UpdateMovement();
+        HandleHorizontalMovement();
+        HandleWallSliding();
+        UpdateAnimation();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
             DealDmg();
-        // Detect walls on sides
-        isSlide = DetectWallOnSides(transform.right) || DetectWallOnSides(-transform.right);
 
-        if (!isSlide)
-        {
-            currentWallSlideSpeed = 0;
+        isSlide = (DetectWallOnSides(Vector3.right) || DetectWallOnSides(Vector3.left) &&canWallSlide);
+        animator.SetBool("IsWallSliding", isSlide);
 
-        }
+
+
 
         MoveIndicator();
-
-        // Detect joystick release for dash
         DetectJoystickReleaseForDash();
     }
-    private void DashButton_performed(InputAction.CallbackContext obj)
+
+    private void UpdateDashCooldown()
     {
-        if (!canDash)
-            return;
-
-        Debug.Log("Dash");
-        currDashTime = 0.01f;
-        StartCoroutine(Dash());
-        var dashDirection = shootIndicator.transform.right;
-        rb.velocity = Vector3.zero;
-        rb.AddForce(dashDirection * dashForce, ForceMode.VelocityChange);
+        currDashTime = Mathf.Clamp(currDashTime + Time.fixedDeltaTime, 0, dashCooldown);
+        dashCDSlider.value = currDashTime / dashCooldown;
     }
-    private void WallSlide()
-    {
-        if (baseSpeed == 0 || baseAcceleration == 0)
-        {
-            baseSpeed = segmentController.CurrSegmentSpeed;
-            baseAcceleration = segmentController.CurrAcceleration;
-        }
 
-        // Reduce segment speed and acceleration when sliding
-        segmentController.CurrSegmentSpeed = Mathf.Max(baseSpeed * 0.5f, segmentController.CurrSegmentSpeed * Time.deltaTime * 6); // Reduce speed
-        segmentController.CurrAcceleration = Mathf.Max(baseAcceleration * 0.2f, segmentController.CurrAcceleration * Time.deltaTime * 6); // Reduce acceleration
-    }
-    private void MoveIndicator()
-    {
-        shootingMovement = inputActions.Horizontal.ShootMovement.ReadValue<Vector2>();
-
-        if (shootingMovement.sqrMagnitude > 0.1f)
-        {
-            lastIndicatorAngle = Mathf.Atan2(shootingMovement.y, shootingMovement.x) * Mathf.Rad2Deg;
-        }
-
-        var angle = Mathf.Atan2(shootingMovement.y, shootingMovement.x) * Mathf.Rad2Deg;
-        Vector2 indicatorPosition = new Vector2(
-            Mathf.Cos(angle * Mathf.Deg2Rad) * indicatorRadius,
-            Mathf.Sin(angle * Mathf.Deg2Rad) * indicatorRadius
-        );
-
-        shootIndicator.transform.position = transform.position + (Vector3)indicatorPosition;
-        shootIndicator.transform.rotation = Quaternion.Euler(0, 0, lastIndicatorAngle);
-    }
-    private void DetectJoystickReleaseForDash()
-    {
-        if (shootingMovement.sqrMagnitude > 0.1f)
-        {
-            // Joystick is held
-            wasJoystickHeld = true;
-        }
-        else if (wasJoystickHeld && shootingMovement == Vector2.zero)
-        {
-            // Joystick was held but released
-            Debug.Log("Joystick released, performing dash");
-            DashButton_performed(new InputAction.CallbackContext()); // Invoke dash
-
-            // Restore original acceleration
-            segmentController.CurrAcceleration = originalAcceleration;
-
-            // Reset the flag
-            wasJoystickHeld = false;
-        }
-    }
-    private void MovementInput()
+    private void UpdateMovement()
     {
         try
         {
@@ -218,62 +145,149 @@ public class NewPlayerMovement : MonoBehaviour
             }
         }
     }
-    private bool DetectWallOnSides(Vector3 direction)
-    {
-        var distance = wallDetectionRange + transform.localScale.x / 2;
-        return Physics.Raycast(transform.position, direction, out var hit, distance, wallLayer);
-    }
-    public void Death()
-    {
-        Destroy(gameObject); // Zniszcz gracza
-    }
 
-    public void DealDmg()
+    private void HandleHorizontalMovement()
     {
-        if (isInvincible) return; // Jeśli gracz jest nieśmiertelny, pomiń otrzymywanie obrażeń
-
-        allHealthElement[CurrHp - 1].ChangeElementToEmpty();
-        CurrHp--;
-
-        if (CurrHp == 0)
+        if (rb.velocity.y != 0)
         {
-            Death();
+            rb.velocity = new Vector3(rb.velocity.x, Mathf.Lerp(rb.velocity.y, 0, breakingSpeed));
+            if (rb.velocity.y < 0.1 && rb.velocity.y > -0.1)
+                rb.velocity = new Vector3(rb.velocity.x, 0);
+
+        }
+
+        if (rb.velocity.y < 0.05 && rb.velocity.y > -0.05) ;
+        {
+            transform.position = new Vector3(transform.position.x, Mathf.Lerp(transform.position.y, 0, resetPositionSpeed));
+        }
+
+        rb.AddForce(new Vector3(horizontalMovement, 0, 0) * horizontalSpeed);
+        FlipSprite();
+    }
+
+    private void FlipSprite()
+    {
+        if (rb.velocity.x < 0 && isFacingRight && !isSlide)
+            Flip();
+        else if (rb.velocity.x > 0 && !isFacingRight && !isSlide)
+            Flip();
+    }
+
+    private void HandleWallSliding()
+    {
+        staminaSlider.value = currentStamina / maxStamina;
+        if (isSlide)
+        {
+            if(currentStamina <= 0)
+            {
+                StartBlinkingStaminaBar();
+                canWallSlide = false;
+            }
+            else
+            {
+                // Zużywaj staminę podczas wall slide
+                currentStamina -= Time.deltaTime * staminaUseMultiplayer;
+
+                // Ustawianie prędkości ślizgu po ścianie
+                if (baseSpeed == 0 || baseAcceleration == 0)
+                {
+                    baseSpeed = segmentController.CurrSegmentSpeed;
+                    baseAcceleration = segmentController.CurrAcceleration;
+                }
+
+                // Spowalnianie prędkości i przyspieszenia segmentu
+                segmentController.CurrSegmentSpeed = Mathf.Lerp(segmentController.CurrSegmentSpeed, baseSpeed * slideMaxSpeedSlow, wallSlideBreakeSpeed);
+            }
         }
         else
         {
-            StartCoroutine(BecomeInvincible()); // Rozpocznij okres nieśmiertelności
+            if (currentStamina == maxStamina)
+            {
+                staminaRegenTimer = 0;
+            }
+            else
+            {
+                staminaRegenTimer += Time.deltaTime;
+
+                if (staminaRegenTimer >= staminaRegenDelay)
+                {
+                    currentStamina += staminaRegenRate * Time.deltaTime;
+                    currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+                    if (currentStamina == maxStamina && !canWallSlide)
+                    {
+                        StopBlinkingStaminaBar();
+                        canWallSlide = true;
+                    }
+                }
+            }
+            baseSpeed = 0;
+            baseAcceleration = 0;
         }
     }
 
-    public void SetUpHealth()
+    private void UpdateAnimation()
     {
-        CurrHp = maxHp;
-        for (int i = 0; i < maxHp; i++)
+        bool isOnFloor = DetectFloor();
+        animator.SetBool("Flying Up", rb.velocity.y > 0.1 && !isOnFloor);
+        animator.SetBool("isFlying", rb.velocity.y <= 0.1 && !isOnFloor);
+    }
+
+    private void DashButton_performed(InputAction.CallbackContext context)
+    {
+        if (!canDash) return;
+
+        currDashTime = 0.01f;
+        StartCoroutine(Dash());
+        PerformDash();
+    }
+
+    private void PerformDash()
+    {
+        Vector3 dashDirection = shootIndicator.transform.right;
+        rb.velocity = Vector3.zero;
+        rb.AddForce(dashDirection * dashForce, ForceMode.VelocityChange);
+    }
+
+    private void MoveIndicator()
+    {
+        shootingMovement = inputActions.Horizontal.ShootMovement.ReadValue<Vector2>();
+
+        if (shootingMovement.sqrMagnitude > 0.1f)
         {
-            var element = Instantiate(hpUiPrefab, hpContent); // Tworzenie elementu HP
-            allHealthElement.Add(element);
-            element.ChangeElementToFull();
+            lastIndicatorAngle = Mathf.Atan2(shootingMovement.y, shootingMovement.x) * Mathf.Rad2Deg;
+        }
+
+        Vector2 indicatorPosition = new Vector2(
+            Mathf.Cos(lastIndicatorAngle * Mathf.Deg2Rad) * indicatorRadius,
+            Mathf.Sin(lastIndicatorAngle * Mathf.Deg2Rad) * indicatorRadius
+        );
+
+        shootIndicator.transform.position = transform.position + (Vector3)indicatorPosition;
+        shootIndicator.transform.rotation = Quaternion.Euler(0, 0, lastIndicatorAngle);
+    }
+
+    private void DetectJoystickReleaseForDash()
+    {
+        if (shootingMovement.sqrMagnitude > 0.1f)
+        {
+            wasJoystickHeld = true;
+        }
+        else if (wasJoystickHeld && shootingMovement == Vector2.zero)
+        {
+            DashButton_performed(new InputAction.CallbackContext());
+            wasJoystickHeld = false;
         }
     }
 
-    private IEnumerator BecomeInvincible()
+    private bool DetectWallOnSides(Vector3 direction)
     {
-        isInvincible = true; // Włącz tryb nieśmiertelności
+        return Physics.Raycast(transform.position, direction, out _, wallDetectionRange + transform.localScale.x / 2, wallLayer);
+    }
 
-        float timer = 0f;
-        while (timer < invincibilityDuration)
-        {
-            // Miganie sprite'a (włącz/wyłącz)
-            playerSprite.enabled = !playerSprite.enabled;
-
-            yield return new WaitForSeconds(blinkInterval);
-            timer += blinkInterval;
-        }
-
-        // Zakończ miganie i upewnij się, że sprite jest widoczny
-        playerSprite.enabled = true;
-
-        isInvincible = false; // Wyłącz tryb nieśmiertelności
+    private bool DetectFloor()
+    {
+        return Physics.Raycast(transform.position, -transform.up, out _, floorDetectionRange + transform.localScale.y / 2, floorLayer);
     }
 
     private void Flip()
@@ -283,10 +297,82 @@ public class NewPlayerMovement : MonoBehaviour
         scale.x *= -1;
         playerSprite.transform.localScale = scale;
     }
+
     private IEnumerator Dash()
     {
         canDash = false;
-        yield return new WaitForSeconds(dashCooldown);  // Set dash cooldown time
+        yield return new WaitForSeconds(dashCooldown);
         canDash = true;
     }
+
+    public void DealDmg()
+    {
+        if (isInvincible) return;
+
+        allHealthElement[CurrHp - 1].ChangeElementToEmpty();
+        CurrHp--;
+
+        if (CurrHp <= 0)
+        {
+            Death();
+        }
+        else
+        {
+            StartCoroutine(BecomeInvincible());
+        }
+    }
+
+    private void Death()
+    {
+        Destroy(gameObject);
+    }
+
+    public void SetUpHealth()
+    {
+        CurrHp = maxHp;
+        for (int i = 0; i < maxHp; i++)
+        {
+            var element = Instantiate(hpUiPrefab, hpContent);
+            allHealthElement.Add(element);
+            element.ChangeElementToFull();
+        }
+    }
+    private IEnumerator BecomeInvincible()
+    {
+        isInvincible = true;
+        float timer = 0f;
+
+        while (timer < invincibilityDuration)
+        {
+            playerSprite.enabled = !playerSprite.enabled;
+            yield return new WaitForSeconds(blinkInterval);
+            timer += blinkInterval;
+        }
+
+        playerSprite.enabled = true;
+        isInvincible = false;
+    }
+    private IEnumerator BlinkStaminaBar()
+    {
+        while (isBlinking)
+        {
+            sliderFill.color = blinkColor;
+            yield return new WaitForSeconds(blinkInterval);
+            sliderFill.color = normalColor;
+            yield return new WaitForSeconds(blinkInterval);
+        }
+    }
+
+    private void StartBlinkingStaminaBar()
+    {
+        isBlinking = true;
+        StartCoroutine(BlinkStaminaBar());
+    }
+
+    private void StopBlinkingStaminaBar()
+    {
+        isBlinking = false;
+        sliderFill.color = normalColor;
+    }
+
 }

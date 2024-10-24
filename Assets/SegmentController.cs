@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SegmentController : MonoBehaviour
 {
+    public NewPlayerMovement player;
     public Segment[] SegmentsPrefabs;
     public Segment firstSegment;
     public Queue<Segment> SpawnedSegments = new Queue<Segment>();
@@ -14,7 +15,9 @@ public class SegmentController : MonoBehaviour
     public float maxSegmentSpeed = 20f; // Maximum speed limit
 
     public float BaseAcceleration;
-    public float CurrAcceleration = 0.5f; // Amount by which speed increases over time
+    public float MaxAcceleration;
+    public float accelerationIcreaseMultiplayer;
+    public float CurrAcceleration = 0.5f;// Amount by which speed increases over time
 
     private void Awake()
     {
@@ -39,10 +42,25 @@ public class SegmentController : MonoBehaviour
 
     private void IncreaseSegmentSpeed()
     {
-        CurrSegmentSpeed += CurrAcceleration * Time.deltaTime; // Zwiększ prędkość
-        if (CurrSegmentSpeed > maxSegmentSpeed) // Ogranicz prędkość do maksymalnej wartości
+        CurrSegmentSpeed += CurrAcceleration * Time.deltaTime;
+
+        if (!player.isSlide)
+            CurrAcceleration += Time.deltaTime * accelerationIcreaseMultiplayer;
+        if (player.isSlide)
+            CurrAcceleration -= Time.deltaTime * accelerationIcreaseMultiplayer * 0.2f;
+
+        if (CurrSegmentSpeed > maxSegmentSpeed)
         {
             CurrSegmentSpeed = maxSegmentSpeed;
+        }
+
+        if (CurrAcceleration > MaxAcceleration)
+        {
+            CurrAcceleration = MaxAcceleration;
+        }
+        if(CurrAcceleration <= BaseAcceleration)
+        {
+            CurrAcceleration = BaseAcceleration;
         }
     }
 

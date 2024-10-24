@@ -299,20 +299,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSprite: {fileID: 385332411}
-  horizontalSpeed: 5
-  wallDetectionRange: 0.05
+  horizontalSpeed: 15
+  floorLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  floorDetectionRange: 0.1
+  breakingSpeed: 0.1
+  resetPositionSpeed: 0.01
+  wallDetectionRange: 0.1
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
   baseWallSlideSpeed: 3
-  endWallSlideSpeed: 0.3
+  endWallSlideSpeed: 0.1
   wallSideSpeed: 2
+  staminaSlider: {fileID: 0}
+  maxStamina: 5
+  staminaUseMultiplayer: 1.5
+  staminaRegenDelay: 2
+  staminaRegenRate: 1
   dashCDSlider: {fileID: 0}
   dashForce: 5
-  dashCooldown: 5
+  dashCooldown: 2
   shootIndicator: {fileID: 9014132421689718285}
   indicatorRadius: 0.5
   segmentController: {fileID: 0}
+  maxHp: 3
+  hpUiPrefab: {fileID: 2669025081929316260, guid: 2392910aeb9e53144a752ed67e391f15, type: 3}
+  hpContent: {fileID: 0}
+  allHealthElement: []
+  invincibilityDuration: 2
+  blinkInterval: 0.1
+  animator: {fileID: 385332410}
   isSlide: 0
   isMoving: 0
   isFacingRight: 0
