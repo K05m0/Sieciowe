@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -48,6 +49,17 @@ public class NewPlayerMovement : MonoBehaviour
     private PlayerInputActions inputActions;
     [SerializeField] private SegmentController segmentController;
 
+    [Header("Health")]
+    [SerializeField] private int maxHp;
+    public int CurrHp { get { return maxHp; } set { maxHp = value; } }
+    [SerializeField] private HealthElementController hpUiPrefab;
+    [SerializeField] private Transform hpContent;
+    [SerializeField] private List<HealthElementController> allHealthElement;
+    public float invincibilityDuration = 2.0f; // Czas trwania nieśmiertelności po otrzymaniu obrażeń
+    public float blinkInterval = 0.1f; // Interwał migania sprite'a
+    private bool isInvincible = false; // Czy gracz jest w stanie nieśmiertelności
+
+
     [Header("States")]
     public bool isSlide = false;
     public bool isMoving = false;
@@ -55,6 +67,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        SetUpHealth();
 
         currDashTime = dashCooldown;
 
@@ -64,7 +77,6 @@ public class NewPlayerMovement : MonoBehaviour
         inputActions = new PlayerInputActions();
         inputActions.Horizontal.Enable();
         inputActions.Horizontal.DashButton.performed += DashButton_performed;
-        inputActions.Horizontal.ShootButton.performed += ShootButton_performed;
 
         // Store the original acceleration
         originalAcceleration = segmentController.CurrAcceleration;
@@ -73,9 +85,9 @@ public class NewPlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         currDashTime += Time.fixedDeltaTime;
-        currDashTime = Mathf.Clamp(currDashTime,0,dashCooldown);
+        currDashTime = Mathf.Clamp(currDashTime, 0, dashCooldown);
 
-        dashCDSlider.value = currDashTime/dashCooldown;
+        dashCDSlider.value = currDashTime / dashCooldown;
         Debug.Log(dashCooldown / currDashTime);
 
         MovementInput();
@@ -110,6 +122,8 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+            DealDmg();
         // Detect walls on sides
         isSlide = DetectWallOnSides(transform.right) || DetectWallOnSides(-transform.right);
 
@@ -124,12 +138,6 @@ public class NewPlayerMovement : MonoBehaviour
         // Detect joystick release for dash
         DetectJoystickReleaseForDash();
     }
-
-    private void ShootButton_performed(InputAction.CallbackContext context)
-    {
-        Debug.Log("Shoot");
-    }
-
     private void DashButton_performed(InputAction.CallbackContext obj)
     {
         if (!canDash)
@@ -142,10 +150,9 @@ public class NewPlayerMovement : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.AddForce(dashDirection * dashForce, ForceMode.VelocityChange);
     }
-
     private void WallSlide()
     {
-        if(baseSpeed == 0 || baseAcceleration == 0)
+        if (baseSpeed == 0 || baseAcceleration == 0)
         {
             baseSpeed = segmentController.CurrSegmentSpeed;
             baseAcceleration = segmentController.CurrAcceleration;
@@ -155,7 +162,6 @@ public class NewPlayerMovement : MonoBehaviour
         segmentController.CurrSegmentSpeed = Mathf.Max(baseSpeed * 0.5f, segmentController.CurrSegmentSpeed * Time.deltaTime * 6); // Reduce speed
         segmentController.CurrAcceleration = Mathf.Max(baseAcceleration * 0.2f, segmentController.CurrAcceleration * Time.deltaTime * 6); // Reduce acceleration
     }
-
     private void MoveIndicator()
     {
         shootingMovement = inputActions.Horizontal.ShootMovement.ReadValue<Vector2>();
@@ -174,7 +180,6 @@ public class NewPlayerMovement : MonoBehaviour
         shootIndicator.transform.position = transform.position + (Vector3)indicatorPosition;
         shootIndicator.transform.rotation = Quaternion.Euler(0, 0, lastIndicatorAngle);
     }
-
     private void DetectJoystickReleaseForDash()
     {
         if (shootingMovement.sqrMagnitude > 0.1f)
@@ -195,7 +200,6 @@ public class NewPlayerMovement : MonoBehaviour
             wasJoystickHeld = false;
         }
     }
-
     private void MovementInput()
     {
         try
@@ -214,11 +218,62 @@ public class NewPlayerMovement : MonoBehaviour
             }
         }
     }
-
     private bool DetectWallOnSides(Vector3 direction)
     {
         var distance = wallDetectionRange + transform.localScale.x / 2;
         return Physics.Raycast(transform.position, direction, out var hit, distance, wallLayer);
+    }
+    public void Death()
+    {
+        Destroy(gameObject); // Zniszcz gracza
+    }
+
+    public void DealDmg()
+    {
+        if (isInvincible) return; // Jeśli gracz jest nieśmiertelny, pomiń otrzymywanie obrażeń
+
+        allHealthElement[CurrHp - 1].ChangeElementToEmpty();
+        CurrHp--;
+
+        if (CurrHp == 0)
+        {
+            Death();
+        }
+        else
+        {
+            StartCoroutine(BecomeInvincible()); // Rozpocznij okres nieśmiertelności
+        }
+    }
+
+    public void SetUpHealth()
+    {
+        CurrHp = maxHp;
+        for (int i = 0; i < maxHp; i++)
+        {
+            var element = Instantiate(hpUiPrefab, hpContent); // Tworzenie elementu HP
+            allHealthElement.Add(element);
+            element.ChangeElementToFull();
+        }
+    }
+
+    private IEnumerator BecomeInvincible()
+    {
+        isInvincible = true; // Włącz tryb nieśmiertelności
+
+        float timer = 0f;
+        while (timer < invincibilityDuration)
+        {
+            // Miganie sprite'a (włącz/wyłącz)
+            playerSprite.enabled = !playerSprite.enabled;
+
+            yield return new WaitForSeconds(blinkInterval);
+            timer += blinkInterval;
+        }
+
+        // Zakończ miganie i upewnij się, że sprite jest widoczny
+        playerSprite.enabled = true;
+
+        isInvincible = false; // Wyłącz tryb nieśmiertelności
     }
 
     private void Flip()
@@ -228,7 +283,6 @@ public class NewPlayerMovement : MonoBehaviour
         scale.x *= -1;
         playerSprite.transform.localScale = scale;
     }
-
     private IEnumerator Dash()
     {
         canDash = false;
