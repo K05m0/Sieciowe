@@ -354,11 +354,14 @@ public class NewPlayerMovement : MonoBehaviour
     }
     private IEnumerator BlinkStaminaBar()
     {
+        Color BlinkColor1 = blinkColor;
+        BlinkColor1.a = 0;
+        Color BlinkColor2 = blinkColor;
         while (isBlinking)
         {
-            sliderFill.color = blinkColor;
+            sliderFill.color = BlinkColor1;
             yield return new WaitForSeconds(blinkInterval);
-            sliderFill.color = normalColor;
+            sliderFill.color = BlinkColor2;
             yield return new WaitForSeconds(blinkInterval);
         }
     }
