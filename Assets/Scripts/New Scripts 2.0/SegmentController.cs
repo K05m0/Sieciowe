@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static NewPlayerMovement;
+
 
 public class SegmentController : MonoBehaviour
 {
@@ -19,6 +21,27 @@ public class SegmentController : MonoBehaviour
     public float accelerationIcreaseMultiplayer;
     public float CurrAcceleration = 0.5f;// Amount by which speed increases over time
 
+    private bool isStop = false;
+
+    private void OnEnable()
+    {
+        OnPlayerDeath += StopSegmentMovement;
+    }
+
+    private void OnDisable()
+    {
+        OnPlayerDeath -= StopSegmentMovement;
+
+    }
+    private void StopSegmentMovement()
+    {
+        CurrSegmentSpeed = 0;
+        CurrAcceleration = 0;
+        isStop = true;
+    }
+
+
+
     private void Awake()
     {
         CurrAcceleration = BaseAcceleration;
@@ -36,6 +59,8 @@ public class SegmentController : MonoBehaviour
 
     private void Update()
     {
+        if (isStop)
+        { return; }
         IncreaseSegmentSpeed(); // Zwiększ prędkość w każdej klatce
         MoveSegments();
     }
@@ -58,7 +83,7 @@ public class SegmentController : MonoBehaviour
         {
             CurrAcceleration = MaxAcceleration;
         }
-        if(CurrAcceleration <= BaseAcceleration)
+        if (CurrAcceleration <= BaseAcceleration)
         {
             CurrAcceleration = BaseAcceleration;
         }

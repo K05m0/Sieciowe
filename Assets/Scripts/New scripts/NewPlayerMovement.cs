@@ -72,9 +72,13 @@ public class NewPlayerMovement : MonoBehaviour
     [SerializeField] private HealthElementController hpUiPrefab;
     [SerializeField] private Transform hpContent;
     [SerializeField] private List<HealthElementController> allHealthElement;
+
     public float invincibilityDuration = 2.0f;
     public float blinkInterval = 0.1f;
     private bool isInvincible = false;
+
+    public delegate void PlayerDeath();
+    public static event PlayerDeath OnPlayerDeath;
 
     [Header("Animation")]
     [SerializeField] private Animator animator;
@@ -324,6 +328,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void Death()
     {
+        OnPlayerDeath?.Invoke();
         Destroy(gameObject);
     }
 
