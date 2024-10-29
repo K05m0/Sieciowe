@@ -276,7 +276,7 @@ Light:
   m_InnerSpotAngle: 61.00653
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -352,7 +352,7 @@ Transform:
   m_GameObject: {fileID: 345599406}
   serializedVersion: 2
   m_LocalRotation: {x: 0.47669393, y: 0.5116047, z: 0.52301115, w: 0.48732206}
-  m_LocalPosition: {x: -4.8377576, y: -1.31, z: -14.647}
+  m_LocalPosition: {x: -4.8377576, y: -0.23105478, z: -14.647}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -573,7 +573,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
@@ -600,7 +600,7 @@ Light:
   m_InnerSpotAngle: 61.00653
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -653,7 +653,7 @@ Transform:
   m_GameObject: {fileID: 1031901741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.47669393, y: 0.5116047, z: 0.52301115, w: 0.48732206}
-  m_LocalPosition: {x: -5.329243, y: -1.3589454, z: -0.16400003}
+  m_LocalPosition: {x: -5.329243, y: -0.28, z: -0.16400003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1164,7 +1164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 3
   m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
+  m_AdditionalLightsShadowResolutionTier: 0
   m_LightLayerMask: 1
   m_RenderingLayers: 1
   m_CustomShadowLayers: 0
