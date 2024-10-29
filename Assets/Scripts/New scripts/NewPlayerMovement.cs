@@ -30,7 +30,6 @@ public class NewPlayerMovement : MonoBehaviour
 
     private float baseSpeed;
     private float baseAcceleration;
-    private float originalAcceleration;
 
     [Header("Stamina")]
     [SerializeField] private Slider staminaSlider;
@@ -83,6 +82,12 @@ public class NewPlayerMovement : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private Animator animator;
 
+    [Header("Particle")]
+    [SerializeField] private ParticleSystem particle;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource wallSlideAudio;
+
     [Header("States")]
     public bool isSlide = false;
     public bool isMoving = false;
@@ -97,8 +102,6 @@ public class NewPlayerMovement : MonoBehaviour
         inputActions = new PlayerInputActions();
         inputActions.Horizontal.Enable();
         inputActions.Horizontal.DashButton.performed += DashButton_performed;
-        originalAcceleration = segmentController.CurrAcceleration;
-        Canvas.ForceUpdateCanvases();
     }
 
     private void FixedUpdate()
@@ -115,7 +118,28 @@ public class NewPlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             DealDmg();
 
-        isSlide = (DetectWallOnSides(Vector3.right) || DetectWallOnSides(Vector3.left) &&canWallSlide);
+        if (DetectWallOnSides(Vector3.right) && canWallSlide)
+        {
+            Vector3 currPos = particle.gameObject.transform.localPosition;
+            if (currPos.x < 0)
+            {
+                currPos.x = -currPos.x;
+                particle.gameObject.transform.localPosition = currPos;
+            }
+
+        }
+        else if (DetectWallOnSides(Vector3.left) && canWallSlide)
+        {
+            Vector3 currPos = particle.gameObject.transform.localPosition;
+            if (currPos.x > 0)
+            {
+                currPos.x = -currPos.x;
+                particle.gameObject.transform.localPosition = currPos;
+            }
+        }
+
+
+        isSlide = (DetectWallOnSides(Vector3.right) || DetectWallOnSides(Vector3.left) && canWallSlide);
         animator.SetBool("IsWallSliding", isSlide);
 
 
@@ -180,9 +204,19 @@ public class NewPlayerMovement : MonoBehaviour
     private void HandleWallSliding()
     {
         staminaSlider.value = currentStamina / maxStamina;
+
         if (isSlide)
         {
-            if(currentStamina <= 0)
+            particle.Play();
+
+            // Sprawdź, czy dźwięk jest już odtwarzany; jeśli nie, rozpocznij odtwarzanie
+            if (!wallSlideAudio.isPlaying)
+            {
+                wallSlideAudio.loop = true;
+                wallSlideAudio.Play();
+            }
+
+            if (currentStamina <= 0)
             {
                 StartBlinkingStaminaBar();
                 canWallSlide = false;
@@ -205,6 +239,15 @@ public class NewPlayerMovement : MonoBehaviour
         }
         else
         {
+            particle.Stop();
+
+            // Zatrzymaj dźwięk, gdy wall slide się kończy
+            if (wallSlideAudio.isPlaying)
+            {
+                wallSlideAudio.loop = false;
+                wallSlideAudio.Stop();
+            }
+
             if (currentStamina == maxStamina)
             {
                 staminaRegenTimer = 0;
@@ -225,6 +268,7 @@ public class NewPlayerMovement : MonoBehaviour
                     }
                 }
             }
+
             baseSpeed = 0;
             baseAcceleration = 0;
         }
