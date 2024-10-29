@@ -136,8 +136,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpImage: {fileID: 2669025081447704613}
-  emptyHp: {fileID: 21300000, guid: 65f0e363b74cf5845ab8c3fbc14f39ac, type: 3}
-  fullHp: {fileID: 21300000, guid: 02800fb9cff14da47a04572790384d8b, type: 3}
+  emptyHp: {fileID: 21300000, guid: 08ab07a7bc8826a4fb34ffc658b7a04b, type: 3}
+  fullHp: {fileID: 21300000, guid: 27a5997c837cd5e40a35c02d0319c1f5, type: 3}
 --- !u!1 &4392788324633780943
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
