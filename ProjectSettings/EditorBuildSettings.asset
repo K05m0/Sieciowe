@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TestScenes/Movement Test.unity
-    guid: 1beb6b2e260054f4aaadb4d2c18f03ac
+    path: Assets/Scenes/Finall Scenes/Finall-Main_Menu_Scene.unity
+    guid: 78161a32729912e4c91f9f371a287cce
+  - enabled: 1
+    path: Assets/Scenes/Finall Scenes/Finall-Game-Scene.unity
+    guid: 5b8acb38a13fe3f43a51cc9873b2ffda
   m_configObjects: {}
