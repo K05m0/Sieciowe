@@ -34,7 +34,8 @@ public class NewPlayerMovement : MonoBehaviour
     [Header("Stamina")]
     [SerializeField] private Slider staminaSlider;
     [SerializeField] private Image sliderFill;
-    [SerializeField] private Color blinkColor;
+    [SerializeField] private Color blinkColorA;
+    [SerializeField] private Color blinkColorB;
     [SerializeField] private Color normalColor;
     [SerializeField] private float maxStamina = 5f; // Maksymalny czas trwania wall slide (w sekundach)
     [SerializeField] private float staminaUseMultiplayer = 1.5f; // Maksymalny czas trwania wall slide (w sekundach)
@@ -403,14 +404,11 @@ public class NewPlayerMovement : MonoBehaviour
     }
     private IEnumerator BlinkStaminaBar()
     {
-        Color BlinkColor1 = blinkColor;
-        BlinkColor1.a = 0;
-        Color BlinkColor2 = blinkColor;
         while (isBlinking)
         {
-            sliderFill.color = BlinkColor1;
+            sliderFill.color = blinkColorA;
             yield return new WaitForSeconds(blinkInterval);
-            sliderFill.color = BlinkColor2;
+            sliderFill.color = blinkColorB;
             yield return new WaitForSeconds(blinkInterval);
         }
     }

@@ -8,7 +8,8 @@ public class SegmentController : MonoBehaviour
 {
     public NewPlayerMovement player;
     public Segment[] SegmentsPrefabs;
-    public Segment firstSegment;
+    public Segment FirstSegment;
+    public Segment SecondSegment;
     public Queue<Segment> SpawnedSegments = new Queue<Segment>();
     public int MaxSegmentsSpawns = 5;
     public float distanceBetweenSegments = 44f;
@@ -45,7 +46,8 @@ public class SegmentController : MonoBehaviour
     private void Awake()
     {
         CurrAcceleration = BaseAcceleration;
-        SpawnedSegments.Enqueue(firstSegment);
+        SpawnedSegments.Enqueue(FirstSegment);
+        SpawnedSegments.Enqueue(SecondSegment);
         for (int i = 0; i < MaxSegmentsSpawns - 1; i++)
         {
             AddSegments();
