@@ -237,6 +237,12 @@ public class NewPlayerMovement : MonoBehaviour
                 // Spowalnianie prędkości i przyspieszenia segmentu
                 segmentController.CurrSegmentSpeed = Mathf.Lerp(segmentController.CurrSegmentSpeed, baseSpeed * slideMaxSpeedSlow, wallSlideBreakeSpeed);
             }
+
+            if (currentStamina == maxStamina && !canWallSlide)
+            {
+                StopBlinkingStaminaBar();
+                canWallSlide = true;
+            }
         }
         else
         {

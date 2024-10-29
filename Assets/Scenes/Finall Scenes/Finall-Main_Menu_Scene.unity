@@ -642,15 +642,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tap to start the game
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1eea2106d90d3174a985739aff92967f, type: 2}
-  m_sharedMaterial: {fileID: 4811732212560301310, guid: 1eea2106d90d3174a985739aff92967f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 23f2def93cbb0474d9b98a6985a763eb, type: 2}
+  m_sharedMaterial: {fileID: 1247152249908995420, guid: 23f2def93cbb0474d9b98a6985a763eb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281150975
-  m_fontColor: {r: 1, g: 0.1745283, b: 0.1745283, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -667,7 +667,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25.6
+  m_fontSize: 39.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
