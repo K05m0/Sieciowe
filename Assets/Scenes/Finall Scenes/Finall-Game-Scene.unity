@@ -155,6 +155,29 @@ MonoBehaviour:
   player: {fileID: 149737096}
   SegmentsPrefabs:
   - {fileID: 7858314974451523776, guid: 09bf67b671ac3c345938a1fed7e871f2, type: 3}
+  - {fileID: 6594697001840237209, guid: 0c7308ceeae26c94ead99c7c815d3520, type: 3}
+  - {fileID: 4343712823543001108, guid: d9e9acb16834a36448eb64c0b6e6cb6a, type: 3}
+  - {fileID: 5269310997851487882, guid: 191b3e284e22b564c9cffd7dcf10f833, type: 3}
+  - {fileID: 6071459642123211564, guid: fef6a40dd00ff3e4f8c9feec469aae6b, type: 3}
+  - {fileID: 1670857514527144682, guid: 864435514ec2f30408025bf483e82421, type: 3}
+  - {fileID: 6446977165929465980, guid: ab47a74de75ed6449a7928dec91a78b8, type: 3}
+  - {fileID: 7193881904519876182, guid: 0e8b9f340535ff446bd8731dd795b04e, type: 3}
+  - {fileID: 6325758780420644969, guid: 669e61dea897b3649aa7c196df95cd2f, type: 3}
+  - {fileID: 4534337662296113265, guid: a5310b0801656cf41a1943719c8c3cda, type: 3}
+  - {fileID: 3003620442960119695, guid: c4069d4f097f2e549ac08c4b6377aa9e, type: 3}
+  - {fileID: 3873065008948888542, guid: 6bcaad25a3722b84386734c1e88bef86, type: 3}
+  - {fileID: 537107921558596147, guid: ddbdce49a4df3ee4c8f7460430447aaf, type: 3}
+  - {fileID: 7947228481421307415, guid: bd85592c3ef83404786cbb84f50b9014, type: 3}
+  - {fileID: 7726283103863250365, guid: d17e4ce58e146464d9251eb081e07a77, type: 3}
+  - {fileID: 6844336960688960983, guid: f1fa619ddc760c2488883fe2fc95887f, type: 3}
+  - {fileID: 7030186017037431419, guid: 29b782b3951d05e428b4b063be3e4718, type: 3}
+  - {fileID: 7463530717622988995, guid: be4c071d62fcb894da57c4b28a9fea61, type: 3}
+  - {fileID: 5355689979699666834, guid: b4e73279bd9f13f4f9ba91709112bf1a, type: 3}
+  - {fileID: 58620300738906809, guid: ad76a26da017116428c1e8567019897b, type: 3}
+  - {fileID: 3177717694986079418, guid: 84e92ca39baa42a4e9f51f4daa7afcf8, type: 3}
+  - {fileID: 1197354389950406902, guid: 097884d163c0c67499c4bcd62408b07a, type: 3}
+  - {fileID: 3616596907960801882, guid: 2501548c1d8f7064c939c795f52458c5, type: 3}
+  - {fileID: 6669962013829875177, guid: 80c84ce428f10a6419e7985b7cc173a6, type: 3}
   FirstSegment: {fileID: 280725204}
   SecondSegment: {fileID: 1646525147}
   MaxSegmentsSpawns: 5
@@ -332,7 +355,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 47.75
+  m_fontSize: 38.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1078,7 +1101,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -2516,12 +2539,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.4
+  m_fontSize: 31.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 32.4
+  m_fontSizeMax: 31.3
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3625,12 +3648,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.5
+  m_fontSize: 16.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 22.68
+  m_fontSizeMax: 21.91
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3956,7 +3979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 5.986668
+  m_AspectRatio: 5.7822223
 --- !u!1 &1855231103
 GameObject:
   m_ObjectHideFlags: 0
@@ -4199,7 +4222,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
