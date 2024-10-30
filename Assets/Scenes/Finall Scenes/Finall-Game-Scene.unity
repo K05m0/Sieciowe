@@ -266,7 +266,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -0.0026855469, y: 0}
+  m_AnchoredPosition: {x: -0.0029296875, y: 0}
   m_SizeDelta: {x: -3.9525, y: -1.6477}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &227252111
@@ -355,7 +355,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 61.65
+  m_fontSize: 56.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2202,7 +2202,6 @@ GameObject:
   m_Component:
   - component: {fileID: 903532306}
   - component: {fileID: 903532307}
-  - component: {fileID: 903532308}
   m_Layer: 5
   m_Name: DashSlider
   m_TagString: Untagged
@@ -2227,8 +2226,8 @@ RectTransform:
   - {fileID: 1360791078}
   m_Father: {fileID: 1519393854}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.35, y: 0.096868224}
-  m_AnchorMax: {x: 0.65, y: 0.1}
+  m_AnchorMin: {x: 0.3, y: 0.1}
+  m_AnchorMax: {x: 0.7, y: 0.22}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
@@ -2283,20 +2282,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &903532308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 903532305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AspectMode: 1
-  m_AspectRatio: 5
 --- !u!1 &1018519259
 GameObject:
   m_ObjectHideFlags: 0
@@ -2547,12 +2532,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60.9
+  m_fontSize: 54.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 60.9
+  m_fontSizeMax: 54.85
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -2607,7 +2592,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1154152758}
   - component: {fileID: 1154152760}
-  - component: {fileID: 1154152759}
   m_Layer: 5
   m_Name: StaminaSlider
   m_TagString: Untagged
@@ -2632,25 +2616,11 @@ RectTransform:
   - {fileID: 1373744431}
   m_Father: {fileID: 1519393854}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.35, y: 0.096868224}
-  m_AnchorMax: {x: 0.65, y: 0.1}
-  m_AnchoredPosition: {x: 0, y: 47}
+  m_AnchorMin: {x: 0.3, y: 0.22}
+  m_AnchorMax: {x: 0.7, y: 0.36}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
---- !u!114 &1154152759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1154152757}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AspectMode: 1
-  m_AspectRatio: 5
 --- !u!114 &1154152760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3110,7 +3080,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -0.0026855469, y: 0}
+  m_AnchoredPosition: {x: -0.0029296875, y: 0}
   m_SizeDelta: {x: -3.9525, y: -1.6477}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1373744430
@@ -3656,12 +3626,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.9
+  m_fontSize: 29.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 42.63
+  m_fontSizeMax: 38.394997
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3988,7 +3958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 11.253332
+  m_AspectRatio: 10.133333
 --- !u!1 &1855231103
 GameObject:
   m_ObjectHideFlags: 0
