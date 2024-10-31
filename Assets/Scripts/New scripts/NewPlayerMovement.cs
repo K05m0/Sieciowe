@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -88,6 +89,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioSource wallSlideAudio;
+    [SerializeField] private List<AudioClip> hurtAudio = new List<AudioClip>();
     [SerializeField] private AudioSource hurtPlayerAudio;
     [SerializeField] private AudioSource dashAudio;
     [SerializeField] private List<AudioClip> dashPlayerAudio = new List<AudioClip>();
@@ -295,6 +297,9 @@ public class NewPlayerMovement : MonoBehaviour
     {
         if (!canDash) return;
 
+        var randomIndex = UnityEngine.Random.Range(0, dashPlayerAudio.Count - 1);
+        dashAudio.clip = dashPlayerAudio[randomIndex];
+        dashAudio.Play();
         currDashTime = 0.01f;
         StartCoroutine(Dash());
         PerformDash();
@@ -366,6 +371,12 @@ public class NewPlayerMovement : MonoBehaviour
     public void DealDmg()
     {
         if (isInvincible) return;
+
+
+        var randomIndex = UnityEngine.Random.Range(0, hurtAudio.Count - 1);
+        hurtPlayerAudio.clip = hurtAudio[randomIndex];
+        hurtPlayerAudio.Play();
+
 
         allHealthElement[CurrHp - 1].ChangeElementToEmpty();
         CurrHp--;
