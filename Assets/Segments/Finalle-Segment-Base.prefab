@@ -1135,7 +1135,7 @@ Light:
   m_InnerSpotAngle: 61.00653
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -1306,7 +1306,7 @@ Light:
   m_InnerSpotAngle: 61.00653
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -1623,7 +1623,7 @@ Light:
   m_InnerSpotAngle: 61.00653
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -1923,7 +1923,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: db9c4a5442e959a4db8bee44a5ca2c1d, type: 3}
       propertyPath: m_CastShadows
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: db9c4a5442e959a4db8bee44a5ca2c1d, type: 3}
       propertyPath: m_Materials.Array.data[0]
