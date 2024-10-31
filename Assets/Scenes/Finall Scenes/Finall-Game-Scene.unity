@@ -355,7 +355,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 54.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1236,12 +1236,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 114.8
+  m_fontSize: 55.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 114.8
+  m_fontSizeMax: 55.15
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -1448,7 +1448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 743166454, guid: baf7e66a29191c741acdee7678a4e7d3, type: 3}
       propertyPath: hurtAudio.Array.size
-      value: 12
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 743166454, guid: baf7e66a29191c741acdee7678a4e7d3, type: 3}
       propertyPath: wallSlideBreakeSpeed
@@ -1508,6 +1508,14 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 3318bccd8f427e148b541b1ca24d336b, type: 3}
     - target: {fileID: 743166454, guid: baf7e66a29191c741acdee7678a4e7d3, type: 3}
       propertyPath: hurtAudio.Array.data[11]
+      value: 
+      objectReference: {fileID: 8300000, guid: abe5b1f2f50134745aa590d78d81384e, type: 3}
+    - target: {fileID: 743166454, guid: baf7e66a29191c741acdee7678a4e7d3, type: 3}
+      propertyPath: hurtAudio.Array.data[12]
+      value: 
+      objectReference: {fileID: 8300000, guid: abe5b1f2f50134745aa590d78d81384e, type: 3}
+    - target: {fileID: 743166454, guid: baf7e66a29191c741acdee7678a4e7d3, type: 3}
+      propertyPath: hurtAudio.Array.data[13]
       value: 
       objectReference: {fileID: 8300000, guid: abe5b1f2f50134745aa590d78d81384e, type: 3}
     - target: {fileID: 743166454, guid: baf7e66a29191c741acdee7678a4e7d3, type: 3}
@@ -3046,12 +3054,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 56.3
+  m_fontSize: 22.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 56.3
+  m_fontSizeMax: 22.2
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -3634,7 +3642,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.6
+  m_fontSize: 20.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3804,7 +3812,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.6
+  m_fontSize: 20.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4268,12 +4276,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.4
+  m_fontSize: 11.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 39.41
+  m_fontSizeMax: 15.54
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -4600,7 +4608,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 7.4931993
+  m_AspectRatio: 2.9556513
 --- !u!1 &1855231103
 GameObject:
   m_ObjectHideFlags: 0
@@ -4827,12 +4835,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 114.8
+  m_fontSize: 55.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0
-  m_fontSizeMax: 114.8
+  m_fontSizeMax: 55.15
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
