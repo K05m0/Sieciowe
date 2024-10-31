@@ -88,6 +88,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioSource wallSlideAudio;
+    [SerializeField] private AudioSource hurtPlayerAudio;
+    [SerializeField] private AudioSource dashAudio;
+    [SerializeField] private List<AudioClip> dashPlayerAudio = new List<AudioClip>();
 
     [Header("States")]
     public bool isSlide = false;
