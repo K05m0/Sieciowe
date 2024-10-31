@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 1985121196416112654}
-  minIntensity: 59.6
-  maxIntensity: 2200
+  minIntensity: 80
+  maxIntensity: 3500
   smoothing: 36
 --- !u!114 &5048977007215510500
 MonoBehaviour:
@@ -63,8 +63,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 4068914253366290464}
-  minIntensity: 59.6
-  maxIntensity: 2200
+  minIntensity: 80
+  maxIntensity: 3500
   smoothing: 36
 --- !u!114 &775481452071245630
 MonoBehaviour:
@@ -79,8 +79,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 5776998418780434737}
-  minIntensity: 59.6
-  maxIntensity: 2200
+  minIntensity: 80
+  maxIntensity: 3500
   smoothing: 36
 --- !u!1 &1304714268448608339
 GameObject:
@@ -180,7 +180,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.27450982, g: 0.7607843, b: 0.79607844, a: 1}
-  m_Intensity: 650
+  m_Intensity: 12560.9
   m_Range: 27
   m_SpotAngle: 48.44731
   m_InnerSpotAngle: 21.80208
